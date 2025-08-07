@@ -7,7 +7,7 @@ from httpx import AsyncClient
     "name,expected_status",
     [
         pytest.param("batman", status.HTTP_204_NO_CONTENT, id="known_hero"),
-        pytest.param("superman", status.HTTP_404_NOT_FOUND, id="unknown_hero"),
+        pytest.param("invalid", status.HTTP_404_NOT_FOUND, id="unknown_hero"),
     ],
 )
 async def test_enlisting_hero(

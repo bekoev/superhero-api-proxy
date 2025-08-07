@@ -1,7 +1,7 @@
 import pytest
 
 from app.core.containers import Container
-from tests.integration.hero_router.mocks.api_client import SuperheroApiClientMock
+from tests.integration.hero_router.mocks.http_client import SuperheroAPIHTTPMock
 
 # @pytest.fixture(autouse=True)
 # async def prepare_db_data(db_client):
@@ -16,7 +16,7 @@ from tests.integration.hero_router.mocks.api_client import SuperheroApiClientMoc
 
 
 @pytest.fixture(autouse=True)
-def mock_superhero_api_client(app_container: Container):
-    app_container.superhero_api_client.override(SuperheroApiClientMock())
+def mock_superhero_api_http_client(app_container: Container):
+    app_container.superhero_http_client.override(SuperheroAPIHTTPMock())
     yield
-    app_container.superhero_api_client.reset_override()
+    app_container.superhero_http_client.reset_override()
