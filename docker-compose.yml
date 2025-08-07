@@ -1,0 +1,28 @@
+services:
+  app:
+    build:
+        context: .
+    container_name: superhero-api-proxy-app
+    restart: "no"
+    # command: bash -c "alembic upgrade head && python -m app"
+    command: bash -c "python -m app"
+    environment:
+      - app_host=0.0.0.0
+      - app_port=8080
+      - app_superhero_api_access_token=secret_key
+      # - postgres_host=postgresql
+      # - postgres_port=5432
+      # - postgres_user=user1
+      # - postgres_password=password1
+      # - postgres_db=superheroes
+    ports:
+      - 8080:8080
+
+  # postgresql:
+  #   image: postgres
+  #   container_name: superhero-api-proxy-db
+  #   restart: "no"
+  #   environment:
+  #     POSTGRES_USER: user1
+  #     POSTGRES_PASSWORD: password1
+  #     POSTGRES_DB: superheroes

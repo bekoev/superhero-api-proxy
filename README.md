@@ -48,6 +48,11 @@
 * Note in the logs: `Uvicorn running on http://localhost:8080 (Press CTRL+C to quit)`
 * Optionally, open API docs UI: http://127.0.0.1:8080/docs or http://127.0.0.1:8080/redoc
 
+### Running the application (Docker)
+* Define the app_superhero_api_access_token env variable in docker-compose.yml
+* `docker compose up -d --build`
+* Browse Swagger on http://localhost:8080/docs
+
 ### Running linters
 * `ruff check`
 * `mypy app`
@@ -56,3 +61,16 @@
 * OpenAPI specification: /openapi.json
 * Swagger UI: /docs
 * ReDoc: /redoc
+
+# Deployment
+
+## Linting and type checking
+
+* `docker build --tag superhero-api-proxy-test --target test .`
+* `docker run --rm superhero-api-proxy-test ruff check`
+* `docker run --rm superhero-api-proxy-test mypy app`
+* TODO: Add unit testing
+
+## Building
+
+* `docker build --tag superhero-api-proxy .`
