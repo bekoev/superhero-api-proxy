@@ -21,19 +21,25 @@ class HeroService:
         self._logger.info(f"Looking for hero: {name=}")
         heroes_found = await self._superheroes_api.search_hero(name)
 
-        if not heroes_found:
-            self._logger.info(f"Hero {name=} not found")
-            raise HeroNotFoundError(name)
+        # Consider the case when a search on 'black widow' returns
+        #  'Black Widow' and 'Black Widow II'.
+        hero_found = next(
+            filter(lambda hero: hero.name.casefold() == name.casefold(), heroes_found),
+            None,
+        )
 
-        if len(heroes_found) > 1:
-            self._logger.info(f"Multiple heroes found for {name=}")
-            names = ", ".join([hero.name for hero in heroes_found])
-            message = f"Multiple heroes found, specify the name from: {names}"
-            raise MultipleHeroesFoundError(message)
+        if not hero_found:
+            if len(heroes_found) > 1:
+                self._logger.info(f"Multiple heroes found for {name=}")
+                names = ", ".join([hero.name for hero in heroes_found])
+                message = f"Multiple heroes found, specify the name from: {names}"
+                raise MultipleHeroesFoundError(message)
+            else:
+                self._logger.info(f"Hero {name=} not found")
+                raise HeroNotFoundError(name)
 
-        hero = heroes_found[0]
-        self._logger.info(f"Hero {name=} found: {hero}")
-        await self._heroes_repo.add_hero(hero)
+        self._logger.info(f"Hero {name=} found: {hero_found}")
+        await self._heroes_repo.add_hero(hero_found)
 
     async def get_heroes(self, filter_params: FilterParams) -> list[Hero]:
         return await self._heroes_repo.get_heroes(filter_params)
