@@ -12,7 +12,7 @@ class HeroDB(DBModelBase):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
     powerstats: Mapped[PowerStatsDB] = relationship(
-        back_populates="hero", cascade="all, delete-orphan"
+        back_populates="hero", cascade="all, delete-orphan", lazy="selectin"
     )
 
 
