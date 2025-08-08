@@ -20,3 +20,13 @@ def mock_superhero_api_http_client(app_container: Container):
     app_container.superhero_http_client.override(SuperheroAPIHTTPMock())
     yield
     app_container.superhero_http_client.reset_override()
+
+
+@pytest.fixture(autouse=True)
+async def clear_hero_database(app_container: Container):
+    """Clear the hero database before each test to ensure test isolation."""
+    hero_repo = app_container.hero_repository()
+    await hero_repo.clear_all_heroes()
+    yield
+    # Optionally clear after test as well for cleanliness
+    await hero_repo.clear_all_heroes()

@@ -35,11 +35,15 @@ class HeroService:
                 message = f"Multiple heroes found, specify the name from: {names}"
                 raise MultipleHeroesFoundError(message)
             else:
-                self._logger.info(f"Hero {name=} not found")
-                raise HeroNotFoundError(name)
+                message = f"Hero {name=} not found"
+                self._logger.info(message)
+                raise HeroNotFoundError(message)
 
         self._logger.info(f"Hero {name=} found: {hero_found}")
         await self._heroes_repo.add_hero(hero_found)
 
     async def get_heroes(self, filter_params: FilterParams) -> list[Hero]:
-        return await self._heroes_repo.get_heroes(filter_params)
+        heroes = await self._heroes_repo.get_heroes(filter_params)
+        if not heroes:
+            raise HeroNotFoundError("No heroes found")
+        return heroes
