@@ -1,9 +1,10 @@
-from app.models.hero import FilterParams, Hero
+from app.models.api.hero import FilterParams, Hero
+from app.services.storage.interface import HeroRepositoryInterface
 
 _heroes: dict[int, Hero] = {}
 
 
-class HeroRepositoryInMemory:
+class HeroRepositoryInMemory(HeroRepositoryInterface):
     def __init__(self):
         pass
 

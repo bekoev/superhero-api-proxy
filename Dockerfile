@@ -28,9 +28,8 @@ WORKDIR /backend
 
 COPY --from=build /tmp/requirements.txt /backend/requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /backend/requirements.txt
-# TODO: Uncomment when we have a database
-# COPY ./alembic.ini /backend/
-# COPY ./migrations /backend/migrations
+COPY ./alembic.ini /backend/
+COPY ./migrations /backend/migrations
 COPY ./app /backend/app
 
 USER nonroot
