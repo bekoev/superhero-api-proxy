@@ -74,3 +74,12 @@
 ## Building
 
 * `docker build --tag superhero-api-proxy .`
+
+# ToDo
+
+* Add DB-baked repository for the hero info (keep in-memory implementation for unit tests)
+* Add descriptions to API docs
+* In the hero repo, evaluate the implementation using PG-specific "upserts" (complexity, readability)
+* Add unit tests using in-memory implementation of hero repo, include to Docker for CI
+* Make function-level isolation for all tests and fixtures
+* Migrate from dependency-injector to dishka
