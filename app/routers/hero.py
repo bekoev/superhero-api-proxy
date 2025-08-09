@@ -4,7 +4,7 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends, Query, status
 
 from app.core.containers import Container, inject_module
-from app.models.hero import FilterParams, Hero
+from app.models.api.hero import FilterParams, Hero
 from app.services.hero import HeroService
 
 inject_module(__name__)

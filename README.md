@@ -57,6 +57,12 @@
 * `ruff check`
 * `mypy app`
 
+### Running tests
+1. In docker-compose.yml expose PostgreSQL port
+2  Run `docker compose up` to launch a local PostgreSQL instance
+3. Make sure the database `autotest` exists (create if necessary)
+4. Run `pytest` and make sure all tests are passing
+
 ### API docs
 * OpenAPI specification: /openapi.json
 * Swagger UI: /docs
@@ -77,7 +83,6 @@
 
 # ToDo
 
-* Add DB-baked repository for the hero info (keep in-memory implementation for unit tests)
 * Add descriptions to API docs
 * In the hero repo, evaluate the implementation using PG-specific "upserts" (complexity, readability)
 * Add unit tests using in-memory implementation of hero repo, include to Docker for CI

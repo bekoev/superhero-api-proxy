@@ -1,7 +1,7 @@
 import logging
 
 from app.api.errors import HeroNotFoundError, MultipleHeroesFoundError
-from app.models.hero import FilterParams, Hero
+from app.models.api.hero import FilterParams, Hero
 from app.services.storage.repo_inmemory import HeroRepositoryInMemory
 from app.services.superhero_api import SuperheroApiClient
 

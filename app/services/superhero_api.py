@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 from httpx import AsyncClient
 from pydantic import TypeAdapter
 
-from app.models.hero import Hero
+from app.models.api.hero import Hero
 from app.settings import AppSettings
 
 
