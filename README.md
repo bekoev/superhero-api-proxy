@@ -57,6 +57,12 @@
 * `ruff check`
 * `mypy app`
 
+### Running tests
+1. In docker-compose.yml expose PostgreSQL port
+2  Run `docker compose up` to launch a local PostgreSQL instance
+3. Make sure the database `autotest` exists (create if necessary)
+4. Run `pytest` and make sure all tests are passing
+
 ### API docs
 * OpenAPI specification: /openapi.json
 * Swagger UI: /docs
