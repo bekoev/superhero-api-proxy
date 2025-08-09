@@ -5,6 +5,11 @@ _heroes: dict[int, Hero] = {}
 
 
 class HeroRepositoryInMemory(HeroRepositoryInterface):
+    """In-memory implementation of the hero repository.
+
+    The implementation is kept for testing purposes.
+    """
+
     def __init__(self):
         pass
 

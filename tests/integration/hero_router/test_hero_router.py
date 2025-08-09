@@ -134,16 +134,27 @@ async def test_get_heroes_by_exact_name(app_client: AsyncClient):
     assert heroes[0]["name"] == "Batman"
 
 
-async def test_get_heroes_by_name_case_insensitive(app_client: AsyncClient):
-    """Test that name filtering is case insensitive."""
+@pytest.mark.parametrize(
+    "name,expected_status",
+    [
+        pytest.param("batman", status.HTTP_404_NOT_FOUND, id="wrong_case_1"),
+        pytest.param("Batman", status.HTTP_200_OK, id="correct_case"),
+        pytest.param("BATMAN", status.HTTP_404_NOT_FOUND, id="wrong_case_2"),
+        pytest.param("BaTmAn", status.HTTP_404_NOT_FOUND, id="wrong_case_3"),
+    ],
+)
+async def test_get_heroes_by_name_case_sensitive(
+    app_client: AsyncClient,
+    name: str,
+    expected_status: int,
+):
+    """Test that name filtering is case-sensitive."""
 
     await app_client.post("/hero/?name=batman")
 
-    test_cases = ["batman", "Batman", "BATMAN", "BaTmAn"]
-
-    for name in test_cases:
-        response = await app_client.get(f"/hero/?name={name}")
-        assert response.status_code == status.HTTP_200_OK
+    response = await app_client.get(f"/hero/?name={name}")
+    assert response.status_code == expected_status
+    if expected_status == status.HTTP_200_OK:
         heroes = response.json()
         assert len(heroes) == 1
         assert heroes[0]["name"] == "Batman"

@@ -50,13 +50,9 @@ class HeroRepository(HeroRepositoryInterface):
 
     async def get_heroes(self, filter_params: FilterParams) -> list[Hero]:
         async with self.db_session() as session:
-            query = (
-                select(HeroDB).join(PowerStatsDB, HeroDB.id == PowerStatsDB.hero_id)
-            )
+            query = select(HeroDB).join(PowerStatsDB, HeroDB.id == PowerStatsDB.hero_id)
             if filter_params.name is not None:
-                query = query.where(
-                    HeroDB.name.ilike(f"%{filter_params.name.casefold()}%")
-                )
+                query = query.where(HeroDB.name == filter_params.name)
             if filter_params.strengthFrom is not None:
                 query = query.where(PowerStatsDB.strength >= filter_params.strengthFrom)
             if filter_params.strengthTo is not None:
