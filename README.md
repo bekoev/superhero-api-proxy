@@ -84,8 +84,8 @@
 
 # ToDo
 
+* Re-structure to layers: application, controllers, domain, infrastructure
 * Add descriptions to API docs
 * In the hero repo, evaluate the implementation using PG-specific "upserts" (complexity, readability)
 * Add unit tests using in-memory implementation of hero repo, include to Docker for CI
 * Make function-level isolation for all tests and fixtures
-* Migrate from dependency-injector to dishka

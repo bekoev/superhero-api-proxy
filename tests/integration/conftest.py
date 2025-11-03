@@ -3,16 +3,22 @@ from collections.abc import AsyncGenerator, AsyncIterator
 
 import httpx
 import pytest
-from dishka import AsyncContainer, Provider, Scope, make_async_container, provide
+from dishka import (
+    AsyncContainer,
+    Provider,
+    Scope,
+    ValidationSettings,
+    make_async_container,
+    provide,
+)
 from dishka.integrations.fastapi import setup_dishka
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 from app.api.server import create_app
-from app.core.ioc_containers import AppProvider
-from app.plugins.http.ioc_provider import HTTPProvider
-from app.plugins.logger.ioc_provider import LoggingProvider
+from app.ioc.providers.app import AppProvider
+from app.ioc.providers.db import DBProvider
+from app.ioc.providers.logging import LoggingProvider
 from app.plugins.logger.settings import LoggerSettings
-from app.plugins.postgres.ioc_provider import DBProvider
 from app.plugins.postgres.settings import PostgresSettings
 from app.settings import AppSettings
 from tests.integration.hero_router.mocks.http_client import SuperheroAPIHTTPMock
@@ -23,7 +29,6 @@ class MockHTTPProvider(Provider):
         provides=httpx.AsyncClient,
         source=SuperheroAPIHTTPMock,
         scope=Scope.APP,
-        override=True,
     )
 
 
@@ -32,10 +37,15 @@ async def app_container() -> AsyncIterator[AsyncContainer]:
     # Point tests to a separate database.
     os.environ["postgres_db"] = "autotest"
 
+    # Optional IoC container validation:
+    settings = ValidationSettings(
+        nothing_overridden=True,
+        implicit_override=True,
+        nothing_decorated=True,
+    )
     container = make_async_container(
         AppProvider(),
         DBProvider(),
-        HTTPProvider(),
         LoggingProvider(),
         MockHTTPProvider(),
         context={
@@ -43,6 +53,7 @@ async def app_container() -> AsyncIterator[AsyncContainer]:
             AppSettings: AppSettings(),
             PostgresSettings: PostgresSettings(),
         },
+        validation_settings=settings,
     )
     yield container
     await container.close()

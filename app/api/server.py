@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.exceptions import add_exceptions
 from app.api.routers import add_routers
-from app.core.ioc_containers import create_container
+from app.ioc.containers import create_container
 from app.settings import AppSettings
 
 
