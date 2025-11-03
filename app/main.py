@@ -1,17 +1,19 @@
 import uvicorn
 
 from app.api.server import create_app
-from app.core.containers import container
+from app.plugins.logger.logging_config import LoggingConfiguration
+from app.plugins.logger.settings import LoggerSettings
+from app.settings import AppSettings
 
-app = create_app(container)
+app = create_app()
 
 
 def main() -> None:
-    config = container.config()
-    container.logger().info(f"-- Start {config.app.name}")
+    app_settings = AppSettings()
+    logging_config = LoggingConfiguration(AppSettings(), LoggerSettings())
     uvicorn.run(
         "app.main:app",
-        host=config.app.host,
-        port=config.app.port,
-        log_config=container.logging_config().get_config_dict(),
+        host=app_settings.host,
+        port=app_settings.port,
+        log_config=logging_config.get_config_dict(),
     )

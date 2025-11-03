@@ -2,7 +2,7 @@ import logging
 
 from app.api.errors import HeroNotFoundError, MultipleHeroesFoundError
 from app.models.api.hero import FilterParams, Hero
-from app.services.storage.repo_inmemory import HeroRepositoryInMemory
+from app.services.storage.interface import HeroRepositoryInterface
 from app.services.superhero_api import SuperheroApiClient
 
 
@@ -10,7 +10,7 @@ class HeroService:
     def __init__(
         self,
         superhero_api_client: SuperheroApiClient,
-        hero_repository: HeroRepositoryInMemory,
+        hero_repository: HeroRepositoryInterface,
         logger: logging.Logger,
     ):
         self._logger = logger
