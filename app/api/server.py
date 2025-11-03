@@ -1,18 +1,13 @@
 from contextlib import asynccontextmanager
-from functools import lru_cache
 from logging import Logger
 
-from dishka import make_async_container
 from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.exceptions import add_exceptions
 from app.api.routers import add_routers
-from app.core.ioc_containers import AppProvider
-from app.plugins.logger.settings import LoggerSettings
-from app.plugins.postgres.ioc_provider import DBProvider
-from app.plugins.postgres.settings import PostgresSettings
+from app.core.ioc_containers import create_container
 from app.settings import AppSettings
 
 
@@ -27,18 +22,7 @@ async def lifespan(app: FastAPI):
     await app.state.dishka_container.close()
 
 
-@lru_cache
-def create_app():
-    container = make_async_container(
-        AppProvider(),
-        DBProvider(),
-        context={
-            LoggerSettings: LoggerSettings(),
-            AppSettings: AppSettings(),
-            PostgresSettings: PostgresSettings(),
-        },
-    )
-
+def create_app() -> FastAPI:
     app_config = AppSettings()
     app = FastAPI(title=app_config.name, lifespan=lifespan)
 
@@ -53,6 +37,10 @@ def create_app():
     add_exceptions(app)
     add_routers(app)
 
-    setup_dishka(container=container, app=app)
+    return app
 
+
+def create_production_app() -> FastAPI:
+    app = create_app()
+    setup_dishka(create_container(), app)
     return app

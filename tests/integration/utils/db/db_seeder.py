@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from app.plugins.postgres.plugin import PostgresPlugin
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 
 @dataclass
@@ -15,7 +15,7 @@ class DbTestDataHandler:
 
     def __init__(
         self,
-        client_db: PostgresPlugin,
+        db_engine: AsyncEngine,
         object_type: Any = None,
         table_data: list[dict] | None = None,
     ):
@@ -23,8 +23,7 @@ class DbTestDataHandler:
 
         Also note the add_table_data() possibility to handle another table.
         """
-        self._engine = client_db.engine
-        self._db_session = client_db.session
+        self._engine = db_engine
         self._tables_handled: list[DBModelInfo] = []
         if object_type is not None and table_data is not None:
             self._tables_handled.append(DBModelInfo(object_type, table_data))
@@ -50,9 +49,13 @@ class DbTestDataHandler:
             for table_info in self._tables_handled:
                 await connection.run_sync(table_info.type.__table__.create)
 
-        async with self._db_session() as session:
-            for table_info in self._tables_handled:
-                for model in table_info.data:
-                    db_object = table_info.type(**model)
-                    session.add(db_object)
-            await session.commit()
+        async with AsyncSession(self._engine, autoflush=False) as session:
+            try:
+                for table_info in self._tables_handled:
+                    for model in table_info.data:
+                        db_object = table_info.type(**model)
+                        session.add(db_object)
+                await session.commit()
+            except Exception as e:
+                await session.rollback()
+                raise e

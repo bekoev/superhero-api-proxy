@@ -1,16 +1,10 @@
 from __future__ import annotations
 
-import logging
 import sys
 from logging.config import dictConfig
 
 from app.plugins.logger.settings import LoggerSettings
 from app.settings import AppSettings
-
-
-def init_logging(config: LoggingConfiguration) -> logging.Logger:
-    config.apply_configuration()
-    return logging.getLogger(config.logger_name)
 
 
 class LoggingConfiguration:

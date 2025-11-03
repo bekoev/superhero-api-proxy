@@ -1,11 +1,11 @@
 import uvicorn
 
-from app.api.server import create_app
+from app.api.server import create_production_app
 from app.plugins.logger.logging_config import LoggingConfiguration
 from app.plugins.logger.settings import LoggerSettings
 from app.settings import AppSettings
 
-app = create_app()
+app = create_production_app()
 
 
 def main() -> None:
