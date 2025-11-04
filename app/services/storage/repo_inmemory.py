@@ -13,7 +13,6 @@ class HeroRepositoryInMemory(HeroRepositoryInterface):
     def __init__(self):
         pass
 
-    # async is for the future, when we will use a database
     async def get_heroes(
         self,
         filter_params: FilterParams,
@@ -60,10 +59,9 @@ class HeroRepositoryInMemory(HeroRepositoryInterface):
             result.append(h)
         return result
 
-    # async is for the future, when we will use a database
     async def add_hero(self, hero: Hero) -> None:
         _heroes[hero.id] = hero
 
-    # Method to clear all heroes (useful for testing)
+    # Non-interface method for testing
     async def clear_all_heroes(self) -> None:
         _heroes.clear()

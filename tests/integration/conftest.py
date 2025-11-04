@@ -31,7 +31,7 @@ class MockHTTPProvider(Provider):
     )
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 async def app_container() -> AsyncIterator[AsyncContainer]:
     settings = ValidationSettings(
         nothing_overridden=True,
@@ -59,20 +59,20 @@ async def app_container() -> AsyncIterator[AsyncContainer]:
     await container.close()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def app(app_container):
     app = create_app()
     setup_dishka(app_container, app)
     return app
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 async def app_client(app) -> AsyncGenerator[httpx.AsyncClient]:
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://0.0.0.0") as ac:
         yield ac
 
 
-@pytest.fixture()
+@pytest.fixture
 async def db_engine(app_container: AsyncContainer) -> AsyncEngine:
     return await app_container.get(AsyncEngine)
