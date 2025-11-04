@@ -1,14 +1,10 @@
 from typing import Annotated
 
-from dependency_injector.wiring import Provide, inject
-from fastapi import APIRouter, Depends, Query, status
+from dishka.integrations.fastapi import FromDishka, inject
+from fastapi import APIRouter, Query, status
 
-from app.core.containers import Container, inject_module
 from app.models.api.hero import FilterParams, Hero
 from app.services.hero import HeroService
-
-inject_module(__name__)
-
 
 hero_router = APIRouter(
     responses={404: {"messages": "Not found"}},
@@ -20,7 +16,7 @@ hero_router = APIRouter(
 @inject
 async def enlist_hero(
     name: str,
-    hero_service: HeroService = Depends(Provide[Container.hero_service]),
+    hero_service: FromDishka[HeroService],
 ) -> None:
     await hero_service.enlist_hero(name)
 
@@ -31,6 +27,6 @@ async def enlist_hero(
 @inject
 async def find_heroes(
     filter_params: Annotated[FilterParams, Query()],
-    hero_service: HeroService = Depends(Provide[Container.hero_service]),
+    hero_service: FromDishka[HeroService],
 ) -> list[Hero]:
     return await hero_service.get_heroes(filter_params)

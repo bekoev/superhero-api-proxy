@@ -1,6 +1,6 @@
 import pytest
 
-from tests.integration.hero_router.mocks.http_client import SuperheroAPIHTTPMock
+from tests.integration.utils.mocks.http_client import SuperheroAPIHTTPMock
 
 
 @pytest.mark.parametrize(

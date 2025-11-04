@@ -41,9 +41,10 @@
 ### Setting application parameters
 * Copy .env.example to .env
 * Set the following variables:
-    * app_superhero_api_access_token (On abtaining the value, check https://superheroapi.com/)
+    * app_superhero_api_access_token (On obtaining the value, check https://superheroapi.com/)
 
 ### Running the application (non-containerized)
+* `alembic upgrade head`
 * `python -m app`
 * Note in the logs: `Uvicorn running on http://localhost:8080 (Press CTRL+C to quit)`
 * Optionally, open API docs UI: http://127.0.0.1:8080/docs or http://127.0.0.1:8080/redoc
@@ -59,7 +60,7 @@
 
 ### Running tests
 1. In docker-compose.yml expose PostgreSQL port
-2.  Run `docker compose up` to launch a local PostgreSQL instance
+2. Run `docker compose up -d` to launch a local PostgreSQL instance
 3. Make sure the database `autotest` exists (create if necessary)
 4. Run `pytest` and make sure all tests are passing
 
@@ -83,8 +84,9 @@
 
 # ToDo
 
+* Handle httpx.ConnectTimeout and other Superhero API connection errors (retry, report remaining errors to the caller)
+* Re-structure to layers: application, controllers, domain, infrastructure
 * Add descriptions to API docs
 * In the hero repo, evaluate the implementation using PG-specific "upserts" (complexity, readability)
 * Add unit tests using in-memory implementation of hero repo, include to Docker for CI
 * Make function-level isolation for all tests and fixtures
-* Migrate from dependency-injector to dishka

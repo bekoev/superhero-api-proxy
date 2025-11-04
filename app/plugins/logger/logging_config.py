@@ -1,29 +1,26 @@
 from __future__ import annotations
 
-import logging
 import sys
 from logging.config import dictConfig
 
-from app.settings import MainSettings
-
-
-def init_logging(config: LoggingConfiguration) -> logging.Logger:
-    config.apply_configuration()
-    return logging.getLogger(config.logger_name)
+from app.plugins.logger.settings import LoggerSettings
+from app.settings import AppSettings
 
 
 class LoggingConfiguration:
     """The class to handle logging configuration for the whole application."""
 
-    def __init__(self, app_settings: MainSettings) -> None:
-        self._app_settings = app_settings
-        self.logger_name = self._app_settings.app.name.replace("-", "_")
+    def __init__(
+        self, app_settings: AppSettings, logger_settings: LoggerSettings
+    ) -> None:
+        self.logger_level = logger_settings.level
+        self.logger_name = app_settings.name.replace("-", "_")
 
     def apply_configuration(self) -> None:
         dictConfig(self.get_config_dict())
 
     def get_config_dict(self) -> dict:
-        logging_lvl = self._app_settings.logger.level
+        logging_lvl = self.logger_level
 
         config = {
             "version": 1,

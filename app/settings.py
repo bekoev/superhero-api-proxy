@@ -1,8 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from app.plugins.logger.settings import LoggerSettings
-from app.plugins.postgres.settings import PostgresSettings
-
 
 class AppSettings(BaseSettings):
     """General settings for the application"""
@@ -20,15 +17,3 @@ class AppSettings(BaseSettings):
         frozen=True,
         extra="ignore",
     )
-
-
-class MainSettings:
-    def __init__(
-        self,
-        logger: LoggerSettings,
-        app: AppSettings,
-        db: PostgresSettings,
-    ) -> None:
-        self.logger = logger
-        self.app = app
-        self.db = db

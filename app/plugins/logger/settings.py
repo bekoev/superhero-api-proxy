@@ -1,5 +1,4 @@
 from enum import StrEnum
-from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -18,8 +17,3 @@ class LoggerSettings(BaseSettings):
         frozen=True,
         extra="ignore",
     )
-
-
-@lru_cache
-def get_config():
-    return LoggerSettings()

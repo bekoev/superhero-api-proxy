@@ -1,9 +1,9 @@
+from logging import Logger
+
 from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
-
-from app.core.containers import Container
 
 
 def add_exceptions(app: FastAPI):
@@ -22,6 +22,6 @@ def add_exceptions(app: FastAPI):
         request: Request,
         exc: Exception,
     ):
-        container: Container = request.app.state.container
-        container.logger().exception(str(exc))
+        logger: Logger = await request.app.state.dishka_container.get(Logger)
+        logger.exception(str(exc))
         raise exc

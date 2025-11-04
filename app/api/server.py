@@ -1,17 +1,30 @@
-from functools import lru_cache
+from contextlib import asynccontextmanager
+from logging import Logger
 
+from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.exceptions import add_exceptions
 from app.api.routers import add_routers
-from app.core.containers import Container, provide_wire
+from app.ioc.containers import create_container
+from app.settings import AppSettings
 
 
-@lru_cache
-def create_app(container: Container):
-    app_config = container.config().app
-    app = FastAPI(title=app_config.name)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger: Logger = await app.state.dishka_container.get(Logger)
+    app_settings: AppSettings = await app.state.dishka_container.get(AppSettings)
+    logger.info(f"-- Starting {app_settings.name}")
+
+    yield
+    logger.info(f"-- Stopping {app_settings.name}")
+    await app.state.dishka_container.close()
+
+
+def create_app() -> FastAPI:
+    app_config = AppSettings()
+    app = FastAPI(title=app_config.name, lifespan=lifespan)
 
     app.add_middleware(
         CORSMiddleware,
@@ -21,11 +34,13 @@ def create_app(container: Container):
         allow_headers=["*"],
     )
 
-    provide_wire()
-
     add_exceptions(app)
     add_routers(app)
 
-    app.state.container = container
+    return app
 
+
+def create_production_app() -> FastAPI:
+    app = create_app()
+    setup_dishka(create_container(), app)
     return app
