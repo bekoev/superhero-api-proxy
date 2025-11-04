@@ -84,6 +84,7 @@
 
 # ToDo
 
+* Handle httpx.ConnectTimeout and other Superhero API connection errors (retry, report remaining errors to the caller)
 * Re-structure to layers: application, controllers, domain, infrastructure
 * Add descriptions to API docs
 * In the hero repo, evaluate the implementation using PG-specific "upserts" (complexity, readability)
