@@ -1,4 +1,3 @@
-import os
 from collections.abc import AsyncGenerator, AsyncIterator
 
 import httpx
@@ -21,7 +20,7 @@ from app.ioc.providers.logging import LoggingProvider
 from app.plugins.logger.settings import LoggerSettings
 from app.plugins.postgres.settings import PostgresSettings
 from app.settings import AppSettings
-from tests.integration.hero_router.mocks.http_client import SuperheroAPIHTTPMock
+from tests.integration.utils.mocks.http_client import SuperheroAPIHTTPMock
 
 
 class MockHTTPProvider(Provider):
@@ -34,15 +33,12 @@ class MockHTTPProvider(Provider):
 
 @pytest.fixture(scope="session")
 async def app_container() -> AsyncIterator[AsyncContainer]:
-    # Point tests to a separate database.
-    os.environ["postgres_db"] = "autotest"
-
-    # Optional IoC container validation:
     settings = ValidationSettings(
         nothing_overridden=True,
         implicit_override=True,
         nothing_decorated=True,
     )
+
     container = make_async_container(
         AppProvider(),
         DBProvider(),
@@ -51,8 +47,12 @@ async def app_container() -> AsyncIterator[AsyncContainer]:
         context={
             LoggerSettings: LoggerSettings(),
             AppSettings: AppSettings(),
-            PostgresSettings: PostgresSettings(),
+            PostgresSettings: PostgresSettings(
+                # Point tests to a separate database
+                db="autotest",
+            ),
         },
+        # Optional IoC container validation
         validation_settings=settings,
     )
     yield container
