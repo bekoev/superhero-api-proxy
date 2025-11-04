@@ -24,6 +24,8 @@ from tests.integration.utils.mocks.http_client import SuperheroAPIHTTPMock
 
 
 class MockHTTPProvider(Provider):
+    component = "superhero-api"
+
     superhero_http_client = provide(
         provides=httpx.AsyncClient,
         source=SuperheroAPIHTTPMock,
